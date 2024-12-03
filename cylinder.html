@@ -61,6 +61,8 @@
             }
         }
 
+        genSpiralPair(["C3", "D3", "E3", "Fs3", "Gs3", "As3"], -12, 6);
+        genSpiralPair(["F3", "G3", "A3", "B3", "Cs3", "Ds3"], -12 + 5, 7);
         genSpiralPair(["C4", "D4", "E4", "Fs4", "Gs4", "As4"], 0, 6);
         genSpiralPair(["F4", "G4", "A4", "B4", "Cs5", "Ds5"], 5, 7);
         genSpiralPair(["C5", "D5", "E5", "Fs5", "Gs5", "As5"], 12, 6);
@@ -128,7 +130,7 @@
         });
 
         function playSound(button) {
-            const audio = new Audio(`./notes_440/${button.userData.note}.webm`); // Replace with actual sound file URLs
+            const audio = new Audio(`./notes/${button.userData.note}.wav`);
             audio.play();
         }
 
