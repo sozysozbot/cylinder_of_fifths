@@ -116,6 +116,23 @@
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
+        window.addEventListener('pointermove', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(buttons);
+
+            if (intersects.length > 0) {
+                const clickedButton = intersects[0].object;
+                clickedButton.material.color.set(0xa794d4);
+            } else {
+                buttons.forEach(button => {
+                    button.material.color.set(0x6042A6);
+                });
+            }
+        });
+
         window.addEventListener('click', (event) => {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
