@@ -5,8 +5,9 @@ import os
 # Constants
 SAMPLE_RATE = 44100  # Samples per second
 DURATION = 0.40463   # Duration of each note in seconds
-VOLUME = 0.5         # Volume (0.0 to 1.0)
-FADE_DURATION = 0.1  # Fade-out duration in seconds
+VOLUME = 0.7         # Volume (0.0 to 1.0)
+FADE_OUT_DURATION = DURATION / 4  # Fade-out duration in seconds
+FADE_IN_DURATION = DURATION / 8  # Fade-in duration in seconds
 
 # Note frequencies for C3 to B5
 NOTE_FREQUENCIES = {
@@ -22,13 +23,18 @@ NOTE_FREQUENCIES = {
 OUTPUT_DIR = "notes"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def generate_note_wave(frequency, duration, sample_rate, volume, fade_duration):
+def generate_note_wave(frequency, duration, sample_rate, volume, fade_out_duration, fade_in_duration):
     """Generate a sine wave for a given frequency and duration."""
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     wave_data = np.sin(2 * np.pi * frequency * t) * volume
+
+    # Apply fade-in to avoid clipping noise
+    fade_samples = int(sample_rate * fade_in_duration)
+    fade = np.linspace(0, 1, fade_samples)
+    wave_data[:fade_samples] *= fade
     
     # Apply fade-out to avoid clipping noise
-    fade_samples = int(sample_rate * fade_duration)
+    fade_samples = int(sample_rate * fade_out_duration)
     fade = np.linspace(1, 0, fade_samples)
     wave_data[-fade_samples:] *= fade
 
@@ -44,7 +50,7 @@ def save_wave(filename, wave_data, sample_rate):
 
 # Generate and save notes
 for note, freq in NOTE_FREQUENCIES.items():
-    wave_data = generate_note_wave(freq, DURATION, SAMPLE_RATE, VOLUME, FADE_DURATION)
+    wave_data = generate_note_wave(freq, DURATION, SAMPLE_RATE, VOLUME, FADE_OUT_DURATION, FADE_IN_DURATION)
     file_path = os.path.join(OUTPUT_DIR, f"{note}.wav")
     save_wave(file_path, wave_data, SAMPLE_RATE)
     print(f"Generated: {file_path}")
