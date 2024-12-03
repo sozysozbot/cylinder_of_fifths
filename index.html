@@ -120,16 +120,16 @@
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
+            buttons.forEach(button => {
+                button.material.color.set(0x6042A6);
+            });
+
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(buttons);
 
             if (intersects.length > 0) {
                 const clickedButton = intersects[0].object;
                 clickedButton.material.color.set(0xa794d4);
-            } else {
-                buttons.forEach(button => {
-                    button.material.color.set(0x6042A6);
-                });
             }
         });
 
@@ -147,6 +147,10 @@
         });
 
         function playSound(button) {
+            buttons.forEach(button_ => {
+                button_.material.color.set(0x6042A6);
+            });
+            button.material.color.set(0xa794d4);
             const audio = new Audio(`./notes/${button.userData.note}.wav`);
             audio.play();
         }
